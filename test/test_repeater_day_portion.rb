@@ -6,6 +6,21 @@ class TestRepeaterDayPortion < TestCase
     @now = Time.local(2006, 8, 16, 14, 0, 0, 0)
   end
   
+  def test_am_past_from_bom
+    @now = Time.local(2006, 8, 1, 14, 0, 0, 0)
+    day_portion = Chronic::RepeaterDayPortion.new(:am)
+    day_portion.start = @now
+
+    next_time = day_portion.next(:past)
+
+    assert_equal Time.local(2006, 8, 1, 00), next_time.begin
+    assert_equal Time.local(2006, 8, 1, 11, 59, 59), next_time.end
+
+    next_next_time = day_portion.next(:past)
+    assert_equal Time.local(2006, 7, 31, 00), next_next_time.begin
+    assert_equal Time.local(2006, 7, 31, 11, 59, 59), next_next_time.end
+  end
+
   def test_am_future
     day_portion = Chronic::RepeaterDayPortion.new(:am)
     day_portion.start = @now
